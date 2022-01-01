@@ -10,15 +10,15 @@ export class ProductService {
     private readonly productRespository: Repository<Product>,
   ) {}
 
-  async getProductAll(): Promise<Product[]> {
+  getProductAll(): Promise<Product[]> {
     return this.productRespository.find();
   }
 
-  async getProductById(id: number): Promise<Product> {
+  getProductById(id: number): Promise<Product> {
     return this.productRespository.findOne(id);
   }
 
-  async createProduct(productData: any): Promise<Product> {
+  createProduct(productData: any): Promise<Product> {
     return this.productRespository.save(productData);
   }
 
