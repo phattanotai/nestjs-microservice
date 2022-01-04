@@ -6,12 +6,14 @@ const server = `amqp://${credential}@${host}`;
 
 amqp.connect(server, (err, conn) => {
   conn.createChannel((err, ch) => {
-    const queue = "hello";
-
+    const queue = "nestjs_queue";
     ch.assertQueue(queue, { durable: false });
-    // Note: on Node 6 Buffer.from(msg) should be used
-    ch.sendToQueue(queue, new Buffer("Hello World!"));
-    console.log(" [x] Sent 'Hello World!'");
+    const data = JSON.stringify({
+      pattern: "hello",
+      data: "hello rabbitMq Nodejs",
+    });
+    ch.sendToQueue(queue, new Buffer(data));
+    console.log(` [x] Sent '${data}'`);
     setTimeout(() => {
       conn.close();
       process.exit(0);

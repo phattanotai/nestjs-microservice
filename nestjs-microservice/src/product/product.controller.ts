@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
@@ -9,12 +10,40 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import e from 'express';
+import { Product } from 'src/models/product.model';
 import { ProductService } from './product.service';
+import { AxiosResponse } from 'axios';
+import { firstValueFrom, map, Observable } from 'rxjs';
+
+import { ResponseType } from '../types/response.type';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private httpService: HttpService,
+  ) {}
+
+  @Get('http')
+  async getHttp(@Param('id') id: number) {
+    try {
+      const users: AxiosResponse = await firstValueFrom(
+        this.httpService.get('http://localhost:5000/api/product'),
+        // .pipe(map((response) => response.data)),
+      );
+      console.log(users);
+      if (users.data) {
+        return users.data;
+      } else {
+        return users.data;
+      }
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Error', HttpStatus.BAD_REQUEST);
+    }
+  }
 
   @Get()
   async getAll() {
@@ -44,50 +73,21 @@ export class ProductController {
     }
   }
 
-  @Post()
-  async create(@Body('title') title: string, @Body('image') image: string) {
-    const data = await this.productService.createProduct({
-      title,
-      image,
-    });
-    if (data) {
-      return {
-        statusCode: 200,
-        message: 'Ok',
-        data,
-      };
-    } else {
-      throw new HttpException('NOT IMPLEMENTED', HttpStatus.NOT_IMPLEMENTED);
-    }
+  @EventPattern('create_product')
+  async create(body: Product) {
+    console.log(body);
+    await this.productService.createProduct(body);
   }
 
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body('title') title: string,
-    @Body('image') image: string,
-  ) {
-    const updateStatus = await this.productService.updateProduct(id, {
-      id,
-      title,
-      image,
-    });
-    console.log(updateStatus);
-    if (!updateStatus) {
-      throw new HttpException('Not Modified', HttpStatus.NOT_MODIFIED);
-    } else {
-      throw new HttpException('Ok', HttpStatus.OK);
-    }
+  @EventPattern('update_product')
+  async update(body: Product) {
+    console.log(body);
+    await this.productService.updateProduct(body.id, body);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: number) {
-    const deleteStatus = await this.productService.deleteProduct(id);
-    console.log(deleteStatus);
-    if (!deleteStatus) {
-      throw new HttpException('Not Delete', HttpStatus.NOT_IMPLEMENTED);
-    } else {
-      throw new HttpException('Ok', HttpStatus.OK);
-    }
+  @EventPattern('delete_product')
+  async delete(id: number) {
+    console.log(id);
+    await this.productService.deleteProduct(id);
   }
 }

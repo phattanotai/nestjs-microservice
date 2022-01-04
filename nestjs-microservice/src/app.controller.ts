@@ -10,9 +10,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-  @EventPattern('hello')
-  async hello(data: any) {
-    console.log(data);
-  }
 }

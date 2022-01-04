@@ -9,8 +9,7 @@ amqp.connect(server, (err, conn) => {
     console.log(err);
   } else {
     conn.createChannel((err, ch) => {
-      const queue = "hello";
-
+      const queue = "nestjs_queue";
       ch.assertQueue(queue, { durable: false });
       console.log(
         " [*] Waiting for messages in %s. To exit press CTRL+C",
