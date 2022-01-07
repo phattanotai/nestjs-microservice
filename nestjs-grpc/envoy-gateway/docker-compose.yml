@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  gateway-envoy:
+    build: 
+        context: ./config
+        dockerfile: ./Dockerfile
+    # image: envoyproxy/envoy:v1.20.1
+    container_name: "gateway-envoy"
+    restart: always
+    environment:
+      SERVER_URL: "docker-host"
+    volumes:
+      - ./config/envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      # - '10000:10000'
+      # - '50051:50051'
+      - '8005:8005'
+      - '8001:8001'
