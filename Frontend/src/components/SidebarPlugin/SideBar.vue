@@ -4,7 +4,6 @@
     id="sidenav-main"
   >
     <div class="container-fluid">
-      <!--Toggler-->
       <navbar-toggle-button @click.native="showSidebar">
         <span class="navbar-toggler-icon"></span>
       </navbar-toggle-button>
@@ -31,13 +30,15 @@
               href="#"
               v-on:click="changeLanguage('TH')"
               target="_self"
-            >TH</a>
+              >TH</a
+            >
             <a
               class="dropdown-item language nav-link"
               href="#"
               v-on:click="changeLanguage('EN')"
               target="_self"
-            >EN</a>
+              >EN</a
+            >
 
             <div class="dropdown-divider"></div>
           </base-dropdown>
@@ -46,20 +47,27 @@
             <a slot="title" class="nav-link" href="#" role="button">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
-                  <img alt="Image placeholder" src="/img/theme/team-1-800x800.jpg" />
+                  <img
+                    alt="Image placeholder"
+                    src="/img/theme/team-1-800x800.jpg"
+                  />
                 </span>
               </div>
             </a>
             <router-link to="/public/profile" class="dropdown-item">
               <i class="ni ni-single-02 text-green"></i>
-              <span>{{ $store.getters.getAuthCaption.menu_profile}}</span>
+              <span>{{ $store.getters.getAuthCaption.menu_profile }}</span>
             </router-link>
 
             <div class="dropdown-divider"></div>
 
-            <a style="cursor: pointer;" v-on:click="logout()" class="dropdown-item">
+            <a
+              style="cursor: pointer"
+              v-on:click="logout()"
+              class="dropdown-item"
+            >
               <i class="ni ni-user-run text-red"></i>
-              <span>{{ $store.getters.getAuthCaption.menu_logout}}</span>
+              <span>{{ $store.getters.getAuthCaption.menu_logout }}</span>
             </a>
           </base-dropdown>
         </ul>
@@ -78,7 +86,9 @@
               </router-link>
             </div>
             <div class="col-6 collapse-close">
-              <navbar-toggle-button @click.native="closeSidebar"></navbar-toggle-button>
+              <navbar-toggle-button
+                @click.native="closeSidebar"
+              ></navbar-toggle-button>
             </div>
           </div>
         </div>
@@ -86,14 +96,7 @@
         <ul class="navbar-nav">
           <slot name="links"></slot>
         </ul>
-        <!--Divider-->
         <hr class="my-3" />
-        <!--Heading-->
-        <!-- <h6 class="navbar-heading text-muted">Documentation</h6> -->
-        <!--Navigation-->
-        <ul class="navbar-nav">
-          <slot name="document"></slot>
-        </ul>
       </div>
     </div>
   </nav>
@@ -104,27 +107,27 @@ import NavbarToggleButton from "@/components/NavbarToggleButton";
 export default {
   name: "sidebar",
   components: {
-    NavbarToggleButton
+    NavbarToggleButton,
   },
   props: {
     logo: {
       type: String,
       default: "/img/brand/green.png",
-      description: "Sidebar app logo"
+      description: "Sidebar app logo",
     },
     autoClose: {
       type: Boolean,
       default: true,
       description:
-        "Whether sidebar should autoclose on mobile when clicking an item"
-    }
+        "Whether sidebar should autoclose on mobile when clicking an item",
+    },
   },
-  data: function() {
+  data: function () {
     return {};
   },
   provide() {
     return {
-      autoClose: this.autoClose
+      autoClose: this.autoClose,
     };
   },
   methods: {
@@ -133,13 +136,13 @@ export default {
     },
     showSidebar() {
       this.$sidebar.displaySidebar(true);
-    }
+    },
   },
   beforeDestroy() {
     if (this.$sidebar.showSidebar) {
       this.$sidebar.showSidebar = false;
     }
-  }
+  },
 };
 </script>
 <style>
