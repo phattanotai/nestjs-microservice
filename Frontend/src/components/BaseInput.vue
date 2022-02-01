@@ -33,6 +33,7 @@
           v-on="listeners"
           v-bind="$attrs"
           v-model="model"
+          :disabled="disabled"
           class="form-control"
           :class="[
             { 'is-valid': valid === true },
@@ -80,6 +81,10 @@ export default {
     required: {
       type: Boolean,
       description: "Whether input is required (adds an asterix *)",
+    },
+    disabled: {
+      type: Boolean,
+      description: "Whether checkbox is disabled",
     },
     valid: {
       type: Boolean,

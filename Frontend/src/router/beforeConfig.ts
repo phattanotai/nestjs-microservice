@@ -8,10 +8,17 @@ const beforeConfig = (router: Router) => {
     store.dispatch(AuthActionTypes.setAccessToken);
     store.dispatch(AuthActionTypes.setUserData);
     store.dispatch(AuthActionTypes.checkLogin);
-    if (from.name && from.path) {
+    console.log(from.path, from.name);
+    if (from.path) {
+      let name = from.name;
+      let path = from.path;
+      if (from.name === "login" || !from.name) {
+        name = "home";
+        path = "/home";
+      }
       store.dispatch(AuthActionTypes.setFromUrl, {
-        name: from.name,
-        path: from.path,
+        name,
+        path,
       });
     }
     next();

@@ -24,10 +24,10 @@
     <div class="main-content" :data="sidebarBackground">
       <dashboard-navbar></dashboard-navbar>
       <div>
-        <fade-transition :duration="200" origin="center top" mode="out-in">
+        <div class="content">
           <!-- your content here -->
           <router-view></router-view>
-        </fade-transition>
+        </div>
         <content-footer v-if="!$route.meta.hideFooter"></content-footer>
       </div>
     </div>
@@ -39,7 +39,6 @@ import DashboardNavbar from "./DashboardNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import { useStore } from "../../store";
 import { AuthActionTypes } from "../../store/auth/action-types";
-import router from "../../router";
 
 export default {
   components: {
@@ -56,7 +55,10 @@ export default {
 
     onMounted(() => {
       if (!store.getters.getLogin) {
-        router.push("/auth/login");
+        store.dispatch(AuthActionTypes.doLogout);
+      } else {
+        const lang = localStorage.getItem("language") || "";
+        store.dispatch(AuthActionTypes.updateLanguage, lang);
       }
     });
 
@@ -69,4 +71,8 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style>
+.content {
+  min-height: 90vh;
+}
+</style>

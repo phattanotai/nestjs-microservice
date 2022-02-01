@@ -83,23 +83,13 @@
               <div class="col">
                 <ul class="nav nav-pills justify-content-end">
                   <li class="nav-item mr-2 mr-md-0">
-                    <a
-                      class="nav-link py-2 px-3"
-                      href="#"
-                      :class="{ active: bigLineChart.activeIndex === 0 }"
-                      @click.prevent="initBigChart(0)"
-                    >
+                    <a class="nav-link py-2 px-3" href="#">
                       <span class="d-none d-md-block">Month</span>
                       <span class="d-md-none">M</span>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a
-                      class="nav-link py-2 px-3"
-                      href="#"
-                      :class="{ active: bigLineChart.activeIndex === 1 }"
-                      @click.prevent="initBigChart(1)"
-                    >
+                    <a class="nav-link py-2 px-3" href="#">
                       <span class="d-none d-md-block">Week</span>
                       <span class="d-md-none">W</span>
                     </a>
@@ -107,13 +97,6 @@
                 </ul>
               </div>
             </div>
-            <line-chart
-              :height="350"
-              ref="bigChart"
-              :chart-data="bigLineChart.chartData"
-              :extra-options="bigLineChart.extraOptions"
-            >
-            </line-chart>
           </card>
         </div>
 
@@ -125,13 +108,6 @@
                 <h5 class="h3 mb-0">Total orders</h5>
               </div>
             </div>
-
-            <bar-chart
-              :height="350"
-              ref="barChart"
-              :chart-data="redBarChart.chartData"
-            >
-            </bar-chart>
           </card>
         </div>
       </div>
@@ -140,10 +116,10 @@
       <!--Tables-->
       <div class="row mt-5">
         <div class="col-xl-8 mb-5 mb-xl-0">
-          <page-visits-table></page-visits-table>
+          <!-- <page-visits-table></page-visits-table> -->
         </div>
         <div class="col-xl-4">
-          <social-traffic-table></social-traffic-table>
+          <!-- <social-traffic-table></social-traffic-table> -->
         </div>
       </div>
       <!--End tables-->
@@ -152,13 +128,13 @@
 </template>
 <script lang="ts">
 // Tables
-import SocialTrafficTable from "../components/Dashboard/SocialTrafficTable.vue";
-import PageVisitsTable from "../components/Dashboard/PageVisitsTable.vue";
+// import SocialTrafficTable from "../components/Dashboard/SocialTrafficTable.vue";
+// import PageVisitsTable from "../components/Dashboard/PageVisitsTable.vue";
 
 export default {
   components: {
-    PageVisitsTable,
-    SocialTrafficTable,
+    // PageVisitsTable,
+    // SocialTrafficTable,
   },
   data() {
     return {};

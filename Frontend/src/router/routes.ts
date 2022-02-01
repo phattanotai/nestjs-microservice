@@ -40,24 +40,29 @@ const routes: Array<RouteRecordRaw> = [
     component: DashboardLayout,
     children: [
       {
-        path: "dashboard",
-        name: "dashboard",
-        component: () => import("../views/Dashboard.vue"),
-      },
-      {
         path: "/home",
         name: "home",
         component: () => import("../views/Home.vue"),
       },
       {
-        path: "profile",
+        path: "/dashboard",
+        name: "dashboard",
+        component: () => import("../views/Dashboard.vue"),
+      },
+      {
+        path: "/profile",
         name: "profile",
         component: () => import("../views/UserProfile.vue"),
       },
       {
-        path: "reports",
+        path: "/reports",
         name: "reports",
         component: () => import("../views/Reports.vue"),
+      },
+      {
+        path: "/products",
+        name: "products",
+        component: () => import("../views/Products.vue"),
       },
       {
         path: "/about",

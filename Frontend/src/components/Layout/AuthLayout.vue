@@ -194,7 +194,7 @@ export default {
     };
 
     onMounted(() => {
-      if (store.getters.getToken) {
+      if (store.getters.getLogin) {
         router.push("/home");
       }
 

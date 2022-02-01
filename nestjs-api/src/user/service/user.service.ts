@@ -18,7 +18,7 @@ export class UserService {
   ) {}
 
   create(createdUserDto: CreateUser): Observable<UserI> {
-    return this.mailExists(createdUserDto.email).pipe(
+    return this.mailExists(createdUserDto.email, createdUserDto.username).pipe(
       switchMap((exists: boolean) => {
         if (!exists) {
           return this.authService.hashPassword(createdUserDto.password).pipe(
@@ -34,14 +34,26 @@ export class UserService {
             }),
           );
         } else {
-          throw new HttpException('Email already in use', HttpStatus.CONFLICT);
+          throw new HttpException(
+            'Email or Username already in use',
+            HttpStatus.CONFLICT,
+          );
         }
       }),
     );
   }
 
-  login(loginUserDto: LoginUser): Observable<string> {
-    return this.findUserByEmail(loginUserDto.email).pipe(
+  update(id: number, createdUserDto: CreateUser): Observable<any> {
+    console.log(createdUserDto, id);
+    return from(this.userRepository.update(id, createdUserDto)).pipe(
+      map((savedUser: any) => {
+        return savedUser;
+      }),
+    );
+  }
+
+  login(loginUserDto: LoginUser): Observable<any> {
+    return this.findUserByEmail(loginUserDto.username).pipe(
       switchMap((user: UserI) => {
         if (user) {
           return this.validatePassword(
@@ -51,9 +63,16 @@ export class UserService {
             switchMap((passwordsMatches: boolean) => {
               if (passwordsMatches) {
                 return this.findOne(user.id).pipe(
-                  switchMap((user: UserI) =>
-                    this.authService.generateJwt(user),
-                  ),
+                  switchMap((user: UserI) => {
+                    return this.authService.generateJwt(user).pipe(
+                      map((jwt: any) => {
+                        return {
+                          jwt,
+                          user,
+                        };
+                      }),
+                    );
+                  }),
                 );
               } else {
                 throw new HttpException(
@@ -64,7 +83,7 @@ export class UserService {
             }),
           );
         } else {
-          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+          throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
         }
       }),
     );
@@ -80,10 +99,10 @@ export class UserService {
 
   private findUserByEmail(email: string): Observable<UserI> {
     return from(
-      this.userRepository.findOne(
-        { email },
-        { select: ['id', 'email', 'name', 'password'] },
-      ),
+      this.userRepository.findOne({
+        where: [{ email }, { username: email }],
+        select: ['id', 'email', 'username', 'password'],
+      }),
     );
   }
 
@@ -94,8 +113,10 @@ export class UserService {
     return this.authService.comparePasswords(password, storedPasswordHash);
   }
 
-  private mailExists(email: string): Observable<boolean> {
-    return from(this.userRepository.findOne({ email })).pipe(
+  private mailExists(email: string, username: string): Observable<boolean> {
+    return from(
+      this.userRepository.findOne({ where: [{ email }, { username }] }),
+    ).pipe(
       map((user: UserI) => {
         if (user) {
           return true;

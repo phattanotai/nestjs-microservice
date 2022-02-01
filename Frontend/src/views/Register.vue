@@ -52,6 +52,7 @@
                 <base-checkbox
                   class="custom-control-alternative"
                   v-model="registerData.agree"
+                  @change="agree()"
                 >
                   <span class="text-muted">
                     <a href="#!">{{
@@ -90,24 +91,34 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import router from "../router";
 import AlertService from "../service/AlertService";
+import { AuthActionTypes } from "../store/auth/action-types";
+import userService from "./../service/UsersService";
 
 @Options({
   data() {
     return {
       registerData: {
-        name: "ee",
-        username: "ee",
-        email: "ee",
-        password: "ee",
-        repassword: "ee",
+        name: "test123456",
+        username: "test12345",
+        email: "test12345@gmail.com",
+        password: "123456",
+        repassword: "1234567",
         agree: false,
       },
-      isButtonDisabled: false,
+      isButtonDisabled: true,
     };
   },
   methods: {
-    doRegister() {
+    agree() {
+      if (this.registerData.agree) {
+        this.isButtonDisabled = false;
+      } else {
+        this.isButtonDisabled = true;
+      }
+    },
+    async doRegister() {
       if (
         this.registerData.username === "" ||
         this.registerData.username.length < 6
@@ -128,22 +139,26 @@ import AlertService from "../service/AlertService";
       } else {
         if (this.registerData.password === this.registerData.repassword) {
           if (this.registerData.agree) {
-            this.isButtonDisabled = true;
-            console.log(this.registerData);
-            // this.$store
-            //   .dispatch("doRegister", this.registerData)
-            //   .then((response) => {
-            //     if (response) {
-            //       this.registerData = {
-            //         username: "",
-            //         email: "",
-            //         password: "",
-            //         repassword: "",
-            //         agree: false,
-            //       };
-            //     }
-            //     this.isButtonDisabled = false;
-            //   });
+            const response = await userService.addUser(this.registerData);
+            if (response?.isRegister) {
+              AlertService.Success(
+                this.$store.getters.getAuthCaption.success_register
+              );
+              this.registerData = {
+                username: "",
+                email: "",
+                password: "",
+                repassword: "",
+                agree: false,
+              };
+              router.push("/auth/login");
+            }
+
+            if (response?.isUsername) {
+              AlertService.Warning(
+                this.$store.getters.getAuthCaption.warning_isUsername
+              );
+            }
           } else {
             AlertService.Warning(
               this.$store.getters.getAuthCaption.msg_agree_null

@@ -1,35 +1,20 @@
 <template>
   <div id="app">
-    <!-- <pre-loader v-if="loading" />
-    <router-view v-if="!loading" /> -->
+    <pre-loader v-if="loading" />
+    <router-view v-if="!loading" />
 
-    <router-view />
-
-    <!-- <about></about>
-    <about>
-      <template v-slot:data1>
-        <div>11</div>
-      </template>
-      <template v-slot:data2>
-        <div>22</div>
-      </template>
-    </about>
-    <about>
-      <div>dd</div>
-    </about> -->
-    <!-- <button v-on:click="click">ddd</button> -->
+    <!-- <router-view /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { AuthActionTypes } from "../src/store/auth/action-types";
 import { useStore } from "../src/store";
-import { onMounted, ref } from "vue";
-import About from "./views/About.vue";
+import { onMounted, reactive, ref } from "vue";
 import PreLoader from "./components/PreLoader.vue";
 
 export default {
-  components: { About, PreLoader },
+  components: { PreLoader },
   setup() {
     const store = useStore();
     const loading = ref<Boolean>(true);

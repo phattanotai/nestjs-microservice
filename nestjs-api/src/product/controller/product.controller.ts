@@ -43,62 +43,6 @@ export class ProductController {
     return 'test';
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('files')
-  @UseInterceptors(
-    FilesInterceptor('files', 5, storage(uploadConfig.filesPath)),
-  )
-  @UseGuards(JwtAuthGuard)
-  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
-    const filesArr: string[] = [];
-    for (let i of files) {
-      filesArr.push(i.filename);
-    }
-    return { files: filesArr };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('upload')
-  @UseInterceptors(
-    FileFieldsInterceptor(
-      [
-        { name: 'file1', maxCount: 1 },
-        { name: 'file2', maxCount: 1 },
-      ],
-      storage(uploadConfig.filesPath),
-    ),
-  )
-  upload(
-    @UploadedFiles()
-    files: {
-      file1?: Express.Multer.File[];
-      file2?: Express.Multer.File[];
-    },
-  ) {
-    return {
-      files: files.file1[0].filename,
-      file2: files.file2[0].filename,
-    };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('file')
-  @UseInterceptors(FileInterceptor('file', storage(uploadConfig.filesPath)))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return {
-      file: file,
-    };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('image')
-  @UseInterceptors(FileInterceptor('image', storage(uploadConfig.imagesPath)))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return {
-      file: file,
-    };
-  }
-
   @HasRoles(Role.ADMIN, Role.USER, Role.PREMIUM)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
@@ -181,5 +125,61 @@ export class ProductController {
     } else {
       throw new HttpException('Not Delete', HttpStatus.NOT_IMPLEMENTED);
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('files')
+  @UseInterceptors(
+    FilesInterceptor('files', 5, storage(uploadConfig.filesPath)),
+  )
+  @UseGuards(JwtAuthGuard)
+  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+    const filesArr: string[] = [];
+    for (let i of files) {
+      filesArr.push(i.filename);
+    }
+    return { files: filesArr };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('upload')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'file1', maxCount: 1 },
+        { name: 'file2', maxCount: 1 },
+      ],
+      storage(uploadConfig.filesPath),
+    ),
+  )
+  upload(
+    @UploadedFiles()
+    files: {
+      file1?: Express.Multer.File[];
+      file2?: Express.Multer.File[];
+    },
+  ) {
+    return {
+      files: files.file1[0].filename,
+      file2: files.file2[0].filename,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('file')
+  @UseInterceptors(FileInterceptor('file', storage(uploadConfig.filesPath)))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return {
+      file: file,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('image')
+  @UseInterceptors(FileInterceptor('image', storage(uploadConfig.imagesPath)))
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return {
+      file: file,
+    };
   }
 }

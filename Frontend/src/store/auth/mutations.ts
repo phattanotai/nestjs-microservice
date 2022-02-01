@@ -2,7 +2,7 @@ import { MutationTree } from "vuex";
 import { AuthMutationType } from "./mutation-types";
 import { State } from "./state";
 import { LANGUAGE_TH, LANGUAGE_EN } from "../../assets/caption/authCaption";
-import { AM_MENU, US_MENU, CH_MENU } from "../../assets/caption/menuCaption";
+import { AM_MENU, US_MENU } from "../../assets/caption/menuCaption";
 import { USER_TYPE } from "../../@types";
 
 export type Mutations = {
@@ -37,8 +37,6 @@ export const mutations: MutationTree<State> & Mutations = {
         state.menuItem = US_MENU.MENU_EN;
       } else if (data.role === "admin") {
         state.menuItem = AM_MENU.MENU_EN;
-      } else {
-        state.menuItem = CH_MENU.MENU_EN;
       }
     } else {
       state.language = LANGUAGE_TH;
@@ -46,8 +44,6 @@ export const mutations: MutationTree<State> & Mutations = {
         state.menuItem = US_MENU.MENU_TH;
       } else if (data.role === "admin") {
         state.menuItem = AM_MENU.MENU_TH;
-      } else {
-        state.menuItem = CH_MENU.MENU_TH;
       }
     }
   },

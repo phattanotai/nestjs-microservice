@@ -12,6 +12,9 @@ import router from "../../router";
 import { RootState } from "@/store";
 import { RootGetters } from "@/store";
 
+import { USER_LOGIN } from "../../@types";
+import authService from "../../service/AuthService";
+
 type ActionAugments = Omit<
   ActionContext<State, RootState>,
   "commit" | "getters"
@@ -26,11 +29,11 @@ type ActionAugments = Omit<
 };
 
 export type Actions = {
-  [AuthActionTypes.doLogin](context: ActionAugments, loginData: any): void;
-  [AuthActionTypes.doRegister](
+  [AuthActionTypes.doLogin](
     context: ActionAugments,
-    registerData: any
+    loginData: USER_LOGIN
   ): void;
+
   [AuthActionTypes.doLogout](context: ActionAugments): void;
   [AuthActionTypes.setAccessToken](context: ActionAugments): void;
   [AuthActionTypes.setRememberData](context: ActionAugments): void;
@@ -44,23 +47,12 @@ export type Actions = {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const actions: ActionTree<State, RootState> & Actions = {
-  [AuthActionTypes.doLogin](context, loginData) {
-    const data = {
-      accessToken: "rwerwer",
-      userData: {
-        id: 0,
-        name: "admin",
-        email: "admin",
-        role: "user",
-        imagePath: "aaa",
-        nn: "",
-      },
-    };
-
+  async [AuthActionTypes.doLogin](context, loginData: USER_LOGIN) {
+    const data = await authService.login(loginData);
     if (data.accessToken) {
       context.commit(AuthMutationType.loginStart);
-      const rememberData = {
-        remember: "",
+      const rememberData: USER_LOGIN = {
+        remember: false,
         username: "",
         password: "",
       };
@@ -92,36 +84,12 @@ export const actions: ActionTree<State, RootState> & Actions = {
       context.commit(AuthMutationType.loginStop);
     }
   },
-  async [AuthActionTypes.doRegister]({ commit, rootGetters }, registerData) {
-    console.log(rootGetters);
-    const userData = {
-      users_name: registerData.name,
-      users_email: registerData.email,
-      password: registerData.password,
-      username: registerData.username,
-    };
-    const data = {
-      isRegister: true,
-      isUsername: false,
-    };
 
-    if (data.isRegister) {
-      AlertService.Success(rootGetters.getAuthCaption.success_register);
-      return true;
-    } else {
-      if (data.isUsername) {
-        AlertService.Warning(rootGetters.getAuthCaption.warning_isUsername);
-      }
-      AlertService.Warning(rootGetters.getAuthCaption.warning_register);
-      return false;
-    }
-  },
   [AuthActionTypes.doLogout](context) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userData");
     context.commit(AuthMutationType.logout, "");
     router.push("/auth/login");
-    window.location.replace("/auth/login");
     if (context.rootGetters.getLogin) {
       AlertService.Info(context.rootGetters.getAuthCaption.success_logout);
     }
@@ -177,7 +145,14 @@ export const actions: ActionTree<State, RootState> & Actions = {
   },
   async [AuthActionTypes.checkLogin]({ commit, rootGetters }) {
     if (rootGetters.getToken) {
-      commit(AuthMutationType.loginStart);
+      const data = await authService.getUserProfile();
+      if (data) {
+        localStorage.setItem(
+          "userData",
+          CalculateService.base64_encode(JSON.stringify(data))
+        );
+        commit(AuthMutationType.loginStart);
+      }
     }
   },
 };

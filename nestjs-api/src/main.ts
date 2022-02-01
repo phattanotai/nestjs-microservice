@@ -8,14 +8,18 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use('/public', express.static(join(__dirname, '..', 'public')));
+
   // const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // app.useStaticAssets(join(__dirname, '..', 'public'), {
   //   prefix: '/public/',
   // });
+
   app.use(LoggerMiddleware);
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   });
 
   const config = new DocumentBuilder()
